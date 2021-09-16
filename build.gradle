@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'pl.chillcode'
-version '1.5'
+version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -26,7 +26,6 @@ dependencies {
 
 processResources {
     delete fileTree(project.buildDir)
-
     filter(ReplaceTokens, tokens: [version: rootProject.version])
 }
 
