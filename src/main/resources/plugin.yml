@@ -1,0 +1,5 @@
+name: ChillChat
+main: pl.chillcode.chillchat.ChillChat
+version: @version@
+author: Peridot
+website: chillcode.pl
