@@ -16,12 +16,17 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://storehouse.okaeri.eu/repository/maven-public" }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT"
+
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.3.5"
+    implementation "eu.okaeri:okaeri-configs-serdes-bukkit:3.3.5"
 }
 
 processResources {
@@ -31,6 +36,8 @@ processResources {
 
 shadowJar {
     archiveFileName = "ChillChat ${project.version}.jar"
+
+    relocate "eu.okaeri", "pl.chillcode.chillchat.libs.okaeri"
 
     minimize()
 }

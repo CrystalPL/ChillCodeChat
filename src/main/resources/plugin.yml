@@ -6,3 +6,14 @@ website: chillcode.pl
 
 commands:
   chat:
+
+permissions:
+  chilchat.admin:
+    default: op
+    children:
+      chillchat.chat.clear: true
+      chillchat.chat.enable: true
+      chillchat.chat.disable: true
+
+  chillchat.noclear:
+    default: false

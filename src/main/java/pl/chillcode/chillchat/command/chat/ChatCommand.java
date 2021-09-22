@@ -1,15 +1,5 @@
 package pl.chillcode.chillchat.command.chat;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.bukkit.util.StringUtil;
-import pl.chillcode.chillchat.ChillChat;
-import pl.chillcode.chillchat.command.SubCommand;
-import pl.chillcode.chillchat.command.chat.sub.DisableSubCommand;
-import pl.chillcode.chillchat.command.chat.sub.EnableSubCommand;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
+import pl.chillcode.chillchat.ChillChat;
+import pl.chillcode.chillchat.command.SubCommand;
+import pl.chillcode.chillchat.command.chat.sub.ClearSubCommand;
+import pl.chillcode.chillchat.command.chat.sub.DisableSubCommand;
+import pl.chillcode.chillchat.command.chat.sub.EnableSubCommand;
 
 public class ChatCommand implements CommandExecutor, TabExecutor {
 
@@ -28,8 +30,9 @@ public class ChatCommand implements CommandExecutor, TabExecutor {
     public ChatCommand(ChillChat plugin) {
         this.plugin = plugin;
 
-        this.registerSubCommand(new EnableSubCommand(), "enable", "on", "wlacz");
-        this.registerSubCommand(new DisableSubCommand(), "disable", "off", "wylacz");
+        this.registerSubCommand(new ClearSubCommand(plugin), "clear", "c", "cc", "czysc", "wyczysc");
+        this.registerSubCommand(new EnableSubCommand(plugin), "enable", "on", "wlacz");
+        this.registerSubCommand(new DisableSubCommand(plugin), "disable", "off", "wylacz");
     }
 
     @Override
@@ -75,6 +78,16 @@ public class ChatCommand implements CommandExecutor, TabExecutor {
             this.subCommandMap.put(argumentName, subCommand);
 
             this.argumentSet.add(subCommand);
+        }
+    }
+
+    public static void clearChat(int iterations) {
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            for (int i = 0; i < iterations; i++) {
+                if(!player.hasPermission("chillchat.noclear")) {
+                    player.sendMessage(" ");
+                }
+            }
         }
     }
 
