@@ -2,7 +2,6 @@ package pl.chillcode.chillchat.command.chat.sub;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import pl.chillcode.chillchat.ChillChat;
 import pl.chillcode.chillchat.command.SubCommand;
 import pl.chillcode.chillchat.command.chat.ChatCommand;
@@ -24,9 +23,7 @@ public class ClearSubCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         ChatCommand.clearChat(this.pluginConfiguration.chat.clear.iterations);
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            this.pluginConfiguration.messages.chat.cleared.forEach(message -> player.sendMessage(message.replace("{ADMIN}", sender.getName())));
-        }
+        this.pluginConfiguration.messages.chat.cleared.forEach(message -> Bukkit.broadcastMessage(message.replace("{ADMIN}", sender.getName())));
     }
 
     @Override

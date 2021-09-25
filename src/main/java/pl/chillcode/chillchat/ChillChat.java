@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.chillcode.chillchat.command.chat.ChatCommand;
 import pl.chillcode.chillchat.config.PluginConfiguration;
 import pl.chillcode.chillchat.data.PluginData;
+import pl.chillcode.chillchat.util.ColorUtil;
 
 public class ChillChat extends JavaPlugin {
 
@@ -21,7 +22,7 @@ public class ChillChat extends JavaPlugin {
         this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withBindFile(new File(this.getDataFolder(), "config.yml"));
             it.withConfigurer(new YamlBukkitConfigurer(), new SerdesBukkit());
-            it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, PluginConfiguration::decolor)));
+            it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, ColorUtil::decolor)));
             it.saveDefaults();
             it.load(true);
         });

@@ -3,21 +3,13 @@ package pl.chillcode.chillchat.config;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
-import eu.okaeri.configs.annotation.Exclude;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
+import pl.chillcode.chillchat.util.ColorUtil;
 
 public class PluginConfiguration extends OkaeriConfig {
 
-    @Exclude
-    public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
     public Chat chat = new Chat();
     public Messages messages = new Messages();
-
-    public static String decolor(String coloredString) {
-        return DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
-    }
 
     public static class Chat extends OkaeriConfig {
 
@@ -47,11 +39,11 @@ public class PluginConfiguration extends OkaeriConfig {
 
         public static class Chat extends OkaeriConfig {
 
-            public List<String> cleared = Arrays.asList(" ", " &8>> &7Chat zostal &bwyczyszczony &7przez &e{ADMIN}", " ");
+            public List<String> cleared = ColorUtil.color(" ", " &8>> &7Chat zostal &bwyczyszczony &7przez &e{ADMIN}", " ");
 
-            public List<String> enabled = Arrays.asList(" ", " &8>> &7Chat zostal &awlaczony &7przez &e{ADMIN}", " ");
+            public List<String> enabled = ColorUtil.color(" ", " &8>> &7Chat zostal &awlaczony &7przez &e{ADMIN}", " ");
 
-            public List<String> disabled = Arrays.asList(" ", " &8>> &7Chat zostal &cwylaczony &7przez &e{ADMIN}", " ");
+            public List<String> disabled = ColorUtil.color(" ", " &8>> &7Chat zostal &cwylaczony &7przez &e{ADMIN}", " ");
 
         }
 
