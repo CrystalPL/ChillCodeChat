@@ -1,43 +1,40 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
+    id 'java'
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
+compileJava.options.encoding = 'UTF-8'
 
-group 'pl.chillcode'
-version '1.0'
+group = 'pl.chillcode'
+version = '1.0'
 
-apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 repositories {
     mavenCentral()
-    mavenLocal()
-
-    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    maven { url "https://storehouse.okaeri.eu/repository/maven-public" }
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT"
-
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.3.6"
-    implementation "eu.okaeri:okaeri-configs-serdes-bukkit:3.3.6"
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation name: 'CrCAPICore'
+    implementation name: 'CrCAPIDatabase'
 }
 
-processResources {
-    delete fileTree(project.buildDir)
-    filter(ReplaceTokens, tokens: [version: rootProject.version])
-}
 
 shadowJar {
-    archiveFileName = "ChillChat ${project.version}.jar"
+    relocate 'pl.crystalek.crcapi', 'pl.chillcode.chillcodechat.lib'
 
-    relocate "eu.okaeri", "pl.chillcode.chillchat.libs.okaeri"
-
+    archiveFileName = "$baseName.$extension"
+    classifier(null)
     minimize()
+    destinationDirectory.set(new File("F:\\Minecraft\\minecraft1.8.8\\plugins"))
 }

@@ -1,19 +1,4 @@
-name: ChillChat
-main: pl.chillcode.chillchat.ChillChat
-version: @version@
-author: Peridot
-website: chillcode.pl
-
-commands:
-  chat:
-
-permissions:
-  chilchat.admin:
-    default: op
-    children:
-      chillchat.chat.clear: true
-      chillchat.chat.enable: true
-      chillchat.chat.disable: true
-
-  chillchat.noclear:
-    default: false
+name: ChillCodeChat
+main: pl.chillcode.chillcodechat.ChillCodeChat
+version: 1.0
+author: Crystal
