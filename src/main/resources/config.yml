@@ -1,0 +1,48 @@
+database:
+  # typ przechowywania danych: SQLite, MongoDB, MYSQL
+  storageType: MYSQL
+
+  # sekcja settings odpowiada za konfiguracje połączenia w przypadku użycia MYSQL/MongoDB
+  settings:
+    # hostname - host bazy danych
+    hostname: "127.0.0.1"
+
+    # port — port bazy danych
+    port: "3306"
+
+    # database — nazwa bazy danych
+    database: "chillcode"
+
+    # username — nazwa użytkownika bazy danych
+    username: "root"
+
+    # password — hasło do bazy danych
+    password: "admin"
+
+    # useSSL — czy ma być używany SSL podczas leczenia z bazą danych
+    useSSL: "false"
+
+    # poolSize — maksymalna liczba połączeń z bazą danych
+    poolSize: 5
+
+    # connectionTimeout — czas oczekiwania na połączenie z bazą danych
+    connectionTimeout: 20000
+
+    # przedrostek, jaki ma występować w nazwach tabel (SQLite, MYSQL) lub kolekcji (MongoDB)
+    prefix: "chillcode_chat_"
+
+  sqlite:
+    # nazwa bazy danych w przypadku użycia SQLite
+    fileName: data/data.db
+
+
+# Konfiguracja komendy /chat
+command:
+  chat:
+    name: "chat"
+    aliases: "c"
+
+# czy ma być wyświetlana wiadomość na czacie dla wszystkich o zmianie statusu chatu (on, off), opóźnieniu itd.
+broadcastAction: true
+# co ile sekund ma się odbywać automatyczny zapis wykopanego kamienia
+autoSaveTime: 60
