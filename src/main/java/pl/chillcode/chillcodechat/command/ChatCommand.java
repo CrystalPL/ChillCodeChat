@@ -15,9 +15,8 @@ import pl.chillcode.chillcodechat.slowmode.SlowModeCache;
 import pl.chillcode.chillcodechat.storage.Provider;
 import pl.crystalek.crcapi.message.MessageAPI;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class ChatCommand extends Command {
@@ -36,6 +35,7 @@ public final class ChatCommand extends Command {
         subCommandMap.put("off", chatStatusSubCommand);
         subCommandMap.put("slowmode", new SlowModeSubCommand(config, provider, slowModeCache, plugin, messageAPI));
         subCommandMap.put("stone", new StoneSubCommand(config, plugin, messageAPI));
+
         this.argumentList = subCommandMap.keySet();
     }
 
@@ -72,5 +72,18 @@ public final class ChatCommand extends Command {
 
         subCommand.execute(sender, args);
         return true;
+    }
+
+    @Override
+    public List<String> tabComplete(final CommandSender sender, final String alias, final String[] args) throws IllegalArgumentException {
+        if (args.length == 1) {
+            return argumentList.stream().filter(argument -> argument.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
+        }
+
+        if ((args.length == 2 || args.length == 3 || args.length == 4) && args[0].equalsIgnoreCase("slowmode")) {
+            return subCommandMap.get("slowmode").tabComplete(sender, args);
+        }
+
+        return new ArrayList<>();
     }
 }
