@@ -14,7 +14,10 @@ saveError:
   chat: "&5&lChillCodeChat &8» &cWystąpił problem podczas zapisywania ustawień chat'u!"
 
 timeToNextMessage:
-  chat: "&5&lChillCodeChat &8» &7Następną wiadomość możesz wysłać za &6{SLOWMODE} &7sekund."
+  chat: "&5&lChillCodeChat &8» &7Następną wiadomość możesz wysłać za &6{SLOWDOWN} &7sekund."
+
+noEnoughStone:
+  chat: "&5&lChillCodeChat &8» &cNie masz wymaganej ilości wykopanego kamienia &6{ACTUAL_STONE}&7/&6{MINIMAL_STONE}&7."
 
 status:
   onError:

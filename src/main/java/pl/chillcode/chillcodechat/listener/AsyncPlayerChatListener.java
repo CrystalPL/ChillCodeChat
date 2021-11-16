@@ -28,6 +28,12 @@ public final class AsyncPlayerChatListener implements Listener {
         final Player player = event.getPlayer();
         final User user = slowModeCache.getUser(player.getUniqueId());
 
+        if (user.getBreakStone() < config.getMinimalStoneBreak()) {
+            messageAPI.sendMessage("noEnoughStone", player, ImmutableMap.of("{MINIMAL_STONE}", config.getMinimalStoneBreak(), "{ACTUAL_STONE}", user.getBreakStone()));
+            event.setCancelled(true);
+            return;
+        }
+
         int slowDownTime = config.getServerSlowMode();
         if (user.getSlowDownTime() != 0) {
             slowDownTime = user.getSlowDownTime();
@@ -41,7 +47,7 @@ public final class AsyncPlayerChatListener implements Listener {
 
         final long timeToSendMessage = System.currentTimeMillis() - user.getLastMessage();
         if (timeToSendMessage < slowDownTime) {
-            messageAPI.sendMessage("timeToNextMessage", player, ImmutableMap.of("{SLOWDOWN}", (slowDownTime - timeToSendMessage) / 1000));
+            messageAPI.sendMessage("timeToNextMessage", player, ImmutableMap.of("{SLOWDOWN}", (slowDownTime - timeToSendMessage) / 1000D));
             event.setCancelled(true);
             return;
         }
