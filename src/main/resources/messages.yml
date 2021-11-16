@@ -48,22 +48,18 @@ status:
       - "&5&lChillCodeChat &8» &6/chat off &f- &7wyłącza chat"
 
 clear:
-  clear:
-    chat: "&5&lChillCodeChat &8» &7Chat został wyczyszczony"
   playerClearAdmin:
     chat: "&5&lChillCodeChat &8» &7Chat gracza &6{PLAYER_NAME} &7został wyczyszczony."
-  playerClear:
-    chat:
   bypass:
     chat: "&5&lChillCodeChat &8» &cNie możesz wyczyścić chatu temu graczowi!"
-  message:
+  playerChatClear:
     chat:
       - "&8&m---------------------------------"
       - ""
       - "&5&lChillCodeChat &8» &7Twój chat został wyczyszczony przez &6{ADMIN_NAME}&7."
       - ""
       - "&8&m---------------------------------"
-  broadcast:
+  serverChatClear:
     chat:
       - "&8&m---------------------------------"
       - ""

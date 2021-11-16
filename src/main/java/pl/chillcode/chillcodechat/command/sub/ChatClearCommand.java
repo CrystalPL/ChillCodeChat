@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.chillcode.chillcodechat.command.SubCommand;
+import pl.crystalek.crcapi.lib.adventure.adventure.text.Component;
 import pl.crystalek.crcapi.message.MessageAPI;
 
 import java.util.ArrayList;
@@ -24,11 +25,11 @@ public final class ChatClearCommand implements SubCommand {
         if (args.length == 1) {
             for (final Player player : Bukkit.getOnlinePlayers().stream().filter(player -> !player.hasPermission("chillcode.chat.clear.bypass")).collect(Collectors.toList())) {
                 for (int i = 0; i < 100; i++) {
-                    messageAPI.sendMessage("clear.message", player);
+                    messageAPI.sendMessage(Component.newline(), player, ImmutableMap.of());
                 }
             }
 
-            messageAPI.broadcast("broadcast", ImmutableMap.of("{ADMIN_NAME}", sender.getName()));
+            messageAPI.broadcast("clear.serverChatClear", ImmutableMap.of("{ADMIN_NAME}", sender.getName()));
             return;
         }
 
@@ -50,11 +51,11 @@ public final class ChatClearCommand implements SubCommand {
         }
 
         for (int i = 0; i < 100; i++) {
-            messageAPI.sendMessage("clear.message", player);
+            messageAPI.sendMessage(Component.newline(), player, ImmutableMap.of());
         }
 
         messageAPI.sendMessage("clear.playerClearAdmin", sender, ImmutableMap.of("{PLAYER_NAME}", player.getName()));
-        messageAPI.sendMessage("clear.message", player, ImmutableMap.of("{ADMIN_NAME}", sender.getName()));
+        messageAPI.sendMessage("clear.playerChatClear", player, ImmutableMap.of("{ADMIN_NAME}", sender.getName()));
     }
 
     @Override

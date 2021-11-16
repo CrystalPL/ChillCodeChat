@@ -28,7 +28,7 @@ public final class AsyncPlayerChatListener implements Listener {
         final Player player = event.getPlayer();
         final User user = slowModeCache.getUser(player.getUniqueId());
 
-        if (user.getBreakStone() < config.getMinimalStoneBreak()) {
+        if (user.getBreakStone() < config.getMinimalStoneBreak() && !player.hasPermission("chillcode.chat.stone.bypass")) {
             messageAPI.sendMessage("noEnoughStone", player, ImmutableMap.of("{MINIMAL_STONE}", config.getMinimalStoneBreak(), "{ACTUAL_STONE}", user.getBreakStone()));
             event.setCancelled(true);
             return;

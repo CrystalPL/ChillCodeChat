@@ -24,8 +24,8 @@ public final class ChatStatusSubCommand implements SubCommand {
     @Override
     public void execute(final CommandSender sender, final String[] args) {
         final boolean changeStatus = args[0].equalsIgnoreCase("on") ?
-                changeStatus(sender, true, "status.onError", "status.Enable", "enableBroadcast") :
-                changeStatus(sender, false, "status.offError", "status.Disable", "disableBroadcast");
+                changeStatus(sender, true, "status.onError", "status.enable", "status.enableBroadcast") :
+                changeStatus(sender, false, "status.offError", "status.disable", "status.disableBroadcast");
 
         if (!changeStatus) {
             return;
