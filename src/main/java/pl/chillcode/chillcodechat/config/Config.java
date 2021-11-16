@@ -64,7 +64,7 @@ public final class Config {
         }
 
         this.minimalStoneBreak = minimalStoneBreakOptional.get();
-        this.serverSlowMode = serverSlowModeOptional.get();
+        this.serverSlowMode = serverSlowModeOptional.get() * 1000;
         this.chatEnable = serverSettings.getBoolean("chatEnable");
         this.autoSaveTime = config.getInt("autoSaveTime") * 20;
 
@@ -74,7 +74,7 @@ public final class Config {
     public boolean saveServerSettings() {
         final FileConfiguration serverSettings = serverConfigFileHelper.getConfiguration();
         serverSettings.set("minimalStoneBreak", this.minimalStoneBreak);
-        serverSettings.set("serverSlowMode", this.serverSlowMode);
+        serverSettings.set("serverSlowMode", this.serverSlowMode / 1000);
         serverSettings.set("chatEnable", this.chatEnable);
         try {
             serverConfigFileHelper.save();

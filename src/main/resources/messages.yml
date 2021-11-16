@@ -13,6 +13,9 @@ playerNotExists:
 saveError:
   chat: "&5&lChillCodeChat &8» &cWystąpił problem podczas zapisywania ustawień chat'u!"
 
+timeToNextMessage:
+  chat: "&5&lChillCodeChat &8» &7Następną wiadomość możesz wysłać za &6{SLOWMODE} &7sekund."
+
 status:
   onError:
     chat: "&5&lChillCodeChat &8» &cChat jest już włączony!"
@@ -89,7 +92,7 @@ slowmode:
   generalInfoList:
     chat:
       - "&5&lChillCodeChat &8» &7Globalne opóźnienie na serwerze wynosi &6{SERVER_SLOWMODE} &7sekund."
-      - "&5&lChillCodeChat &8» Opóźnienia dla poszczególnych rang:"
+      - "&5&lChillCodeChat &8» &7Opóźnienia dla poszczególnych rang:"
       - "{RANKFORMAT_SLOWMODE}"
   rankSlowModeListFormat:
     chat: "&5&lChillCodeChat &8» &7Opóźnienie dla rangi &6{RANK} &7wynosi &6{SLOWMODE} &7sekund."

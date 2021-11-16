@@ -12,6 +12,12 @@ import lombok.Setter;
 public final class User {
     int breakStone;
     int slowDownTime;
+    long lastMessage;
+
+    public User(final int breakStone, final int slowDownTime) {
+        this.breakStone = breakStone;
+        this.slowDownTime = slowDownTime;
+    }
 
     public void addStone() {
         this.breakStone++;

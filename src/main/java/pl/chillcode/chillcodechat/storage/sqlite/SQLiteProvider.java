@@ -10,13 +10,11 @@ import pl.crystalek.crcapi.storage.util.SQLUtil;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class SQLiteProvider extends SQLProvider {
     String insertUser;
-    String insertGroupDelay;
 
     public SQLiteProvider(final SQLUtil sqlUtil, final DatabaseConfig databaseConfig) {
         super(sqlUtil, databaseConfig);
 
         this.insertUser = String.format("INSERT OR REPLACE INTO %suser(nickname, uuid) VALUES (?, ?);", databaseConfig.getPrefix());
-        this.insertGroupDelay = String.format("INSERT OR REPLACE INTO %sgroup_slowmode VALUES (?, ?);", databaseConfig.getPrefix());
         this.createTable();
     }
 
@@ -26,22 +24,17 @@ public final class SQLiteProvider extends SQLProvider {
     }
 
     @Override
-    public void setGroupDelay(final String group, final int time) {
-        sqlUtil.executeUpdateAndOpenConnection(insertGroupDelay, group, time);
-    }
-
-    @Override
     public void createTable() {
-        final String userTable = "CREATE TABLE IF NOT EXISTS user (\n" +
-                "    id INTEGER AUTOINCREMENT PRIMARY KEY UNIQUE NOT NULL,\n" +
+        final String userTable = "CREATE TABLE IF NOT EXISTS %suser (\n" +
+                "    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n" +
                 "    nickname VARCHAR(16) NOT NULL,\n" +
                 "    uuid CHAR(36) NOT NULL UNIQUE,\n" +
-                "    cooldown_time INTEGER,\n" +
+                "    time INTEGER,\n" +
                 "    break_stone_amount INTEGER\n" +
                 ");";
 
         final String groupSlowModeTable = "CREATE TABLE IF NOT EXISTS %sgroup_slowmode (\n" +
-                "    id INTEGER AUTOINCREMENT PRIMARY KEY UNIQUE NOT NULL,\n" +
+                "    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,\n" +
                 "    group_name TEXT NOT NULL,\n" +
                 "    time INTEGER NOT NULL\n" +
                 ");";

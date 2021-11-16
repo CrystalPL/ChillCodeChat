@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.chillcode.chillcodechat.command.ChatCommand;
 import pl.chillcode.chillcodechat.config.Config;
 import pl.chillcode.chillcodechat.hook.VaultHook;
+import pl.chillcode.chillcodechat.listener.AsyncPlayerChatListener;
 import pl.chillcode.chillcodechat.listener.BlockBreakListener;
 import pl.chillcode.chillcodechat.listener.PlayerJoinListener;
 import pl.chillcode.chillcodechat.listener.PlayerQuitListener;
@@ -75,6 +76,7 @@ public final class ChillCodeChat extends JavaPlugin {
         pluginManager.registerEvents(new BlockBreakListener(slowModeCache), this);
         pluginManager.registerEvents(new PlayerJoinListener(slowModeCache, provider, this), this);
         pluginManager.registerEvents(new PlayerQuitListener(provider, slowModeCache, this), this);
+        pluginManager.registerEvents(new AsyncPlayerChatListener(config, slowModeCache, messageAPI), this);
 
         final ChatCommand chatCommand = new ChatCommand(config, this, provider, slowModeCache, messageAPI);
         CommandRegistry.register(chatCommand);

@@ -64,7 +64,7 @@ public final class SlowModeSubCommand implements SubCommand {
 
                         provider.setPlayerDelay(playerUUIDOptional.get(), slowModeTime);
                     } else {
-                        slowModeCache.getUser(player.getUniqueId()).setSlowDownTime(slowModeTime);
+                        slowModeCache.getUser(player.getUniqueId()).setSlowDownTime(slowModeTime * 1000);
                         messageAPI.sendMessage("slowmode.setSlowModePlayer", player, ImmutableMap.of("{SLOWMODE}", slowModeTime, "{ADMIN_NAME}", sender.getName()));
                     }
 
@@ -86,7 +86,7 @@ public final class SlowModeSubCommand implements SubCommand {
                 }
 
                 final Integer slowModeTime = slowModeTimeOptional.get();
-                config.setServerSlowMode(slowModeTime);
+                config.setServerSlowMode(slowModeTime * 1000);
 
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     messageAPI.sendMessage(config.saveServerSettings() ? "slowmode.setSlowModeSever" : "saveError", sender, ImmutableMap.of("{SLOWMODE}", slowModeTime));
@@ -115,8 +115,7 @@ public final class SlowModeSubCommand implements SubCommand {
                 }
 
                 final Permission permission = VaultHook.getPermission();
-                final String[] groups = permission.getGroups();
-                if (Arrays.stream(groups).noneMatch(group -> group.equalsIgnoreCase(args[2]))) {
+                if (Arrays.stream(permission.getGroups()).noneMatch(group -> group.equalsIgnoreCase(args[2]))) {
                     messageAPI.sendMessage("slowmode.groupNotExists", sender);
                     return;
                 }
@@ -124,7 +123,7 @@ public final class SlowModeSubCommand implements SubCommand {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     final Integer slowModeTime = slowModeTimeOptional.get();
                     provider.setGroupDelay(args[2], slowModeTime);
-                    slowModeCache.setGroupDelay(args[2], slowModeTime);
+                    slowModeCache.setGroupDelay(args[2], slowModeTime * 1000);
 
                     final Map<String, Object> replacements = ImmutableMap.of("{SLOWMODE}", slowModeTime, "{RANK}", args[2], "{ADMIN_NAME}", sender.getName());
 
@@ -156,7 +155,7 @@ public final class SlowModeSubCommand implements SubCommand {
                     final int entrySetSize = entrySet.size();
                     for (int i = 0; i < entrySetSize; i++) {
                         final Map.Entry<String, Integer> entry = entrySet.get(i);
-                        final Map<String, Object> replacements = ImmutableMap.of("{RANK}", entry.getKey(), "{SLOWMODE}", entry.getValue());
+                        final Map<String, Object> replacements = ImmutableMap.of("{RANK}", entry.getKey(), "{SLOWMODE}", entry.getValue() / 1000);
 
                         componentFormat = componentFormat.append(MessageUtil.replace(rankSlowModeFormatComponent, replacements));
 
@@ -165,7 +164,10 @@ public final class SlowModeSubCommand implements SubCommand {
                         }
                     }
 
-                    final Map<String, Component> replacements = ImmutableMap.of("{SLOWMODE}", Component.text(config.getServerSlowMode()), "{RANKFORMAT_SLOWMODE}", componentFormat);
+                    final Map<String, Component> replacements = ImmutableMap.of(
+                            "{SERVER_SLOWMODE}", Component.text(config.getServerSlowMode()),
+                            "{RANKFORMAT_SLOWMODE}", componentFormat
+                    );
 
                     messageAPI.sendMessageComponent("slowmode.generalInfoList", sender, replacements);
                 } else if (args.length == 4) {
@@ -181,10 +183,10 @@ public final class SlowModeSubCommand implements SubCommand {
 
                             playerDelay = userOptional.get().getSlowDownTime();
                         } else {
-                            playerDelay = slowModeCache.getUser(player.getUniqueId()).getSlowDownTime();
+                            playerDelay = slowModeCache.getUser(player.getUniqueId()).getSlowDownTime() / 1000;
                         }
 
-                        messageAPI.sendMessage("slowmode.playerSlowModeInfo", sender, ImmutableMap.of("{SLOWMODE}", playerDelay));
+                        messageAPI.sendMessage("slowmode.playerSlowModeInfo", sender, ImmutableMap.of("{SLOWMODE}", playerDelay, "{PLAYER_NAME}", args[3]));
                     });
                 } else {
                     messageAPI.sendMessage("slowmode.usage", sender);

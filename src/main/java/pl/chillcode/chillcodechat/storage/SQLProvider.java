@@ -25,6 +25,9 @@ public abstract class SQLProvider extends Provider {
     private String saveUser;
     private String getUserByUUID;
     private String getUserByNickname;
+    private String insertGroupDelay;
+    private String selectGroup;
+    private String updateGroup;
 
     @Override
     public Map<String, Integer> getGroupsDelay() {
@@ -37,7 +40,7 @@ public abstract class SQLProvider extends Provider {
 
             do {
                 final String groupName = resultSet.getString("group_name");
-                final int slowModeTime = resultSet.getInt("time");
+                final int slowModeTime = resultSet.getInt("time") * 1000;
 
                 groupDelayMap.put(groupName, slowModeTime);
             } while (resultSet.next());
@@ -50,7 +53,7 @@ public abstract class SQLProvider extends Provider {
 
     @Override
     public void saveUser(final UUID userUUID, final User user) {
-        sqlUtil.executeUpdateAndOpenConnection(saveUser, user.getSlowDownTime(), user.getBreakStone(), userUUID.toString());
+        sqlUtil.executeUpdateAndOpenConnection(saveUser, user.getSlowDownTime() / 1000, user.getBreakStone(), userUUID.toString());
     }
 
     private Optional<User> getUser(final String sql, final Object... params) {
@@ -59,10 +62,10 @@ public abstract class SQLProvider extends Provider {
                 return Optional.empty();
             }
 
-            final int slowModeTime = resultSet.getInt("slowMode_time");
+            final int slowModeTime = resultSet.getInt("time");
             final int breakStoneAmount = resultSet.getInt("break_stone_amount");
 
-            return Optional.of(new User(breakStoneAmount, slowModeTime));
+            return Optional.of(new User(breakStoneAmount, slowModeTime * 1000));
         };
 
         return sqlUtil.executeQueryAndOpenConnection(sql, function, params);
@@ -92,6 +95,18 @@ public abstract class SQLProvider extends Provider {
     }
 
     @Override
+    public void setGroupDelay(final String group, final int time) {
+        sqlUtil.openConnection(connection -> {
+            final Boolean isGroupExist = sqlUtil.executeQuery(connection, selectGroup, resultSet -> resultSet != null && resultSet.next(), group);
+            if (isGroupExist) {
+                sqlUtil.executeUpdate(connection, updateGroup, time, group);
+            } else {
+                sqlUtil.executeUpdate(connection, insertGroupDelay, group, time);
+            }
+        });
+    }
+
+    @Override
     public void setPlayerDelay(final UUID playerUUID, final int time) {
         sqlUtil.executeUpdateAndOpenConnection(updatePlayerSlowMode, time, playerUUID.toString());
     }
@@ -100,10 +115,13 @@ public abstract class SQLProvider extends Provider {
         final String prefix = databaseConfig.getPrefix();
         selectGroupSlowMode = String.format("SELECT * FROM %sgroup_slowmode;", prefix);
         selectPlayerUUID = String.format("SELECT uuid FROM %suser WHERE nickname = ?;", prefix);
-        updatePlayerSlowMode = String.format("UPDATE %suser SET slowMode_time = ? WHERE uuid = ?;", prefix);
-        saveUser = String.format("UPDATE %suser SET slowMode_time = ?, break_stone_amount = ? WHERE uuid = ?;", prefix);
-        getUserByUUID = String.format("SELECT slowMode_time, break_stone_amount FROM %suser WHERE uuid = ? LIMIT 1;", prefix);
-        getUserByNickname = String.format("SELECT slowMode_time, break_stone_amount FROM %suser WHERE nickname = ? LIMIT 1;", prefix);
+        updatePlayerSlowMode = String.format("UPDATE %suser SET time = ? WHERE uuid = ?;", prefix);
+        saveUser = String.format("UPDATE %suser SET time = ?, break_stone_amount = ? WHERE uuid = ?;", prefix);
+        getUserByUUID = String.format("SELECT time, break_stone_amount FROM %suser WHERE uuid = ? LIMIT 1;", prefix);
+        getUserByNickname = String.format("SELECT time, break_stone_amount FROM %suser WHERE nickname = ? LIMIT 1;", prefix);
+        insertGroupDelay = String.format("INSERT INTO %sgroup_slowmode(group_name, time) VALUES (?, ?);", prefix);
+        selectGroup = String.format("SELECT id FROM %sgroup_slowmode WHERE group_name = ?;", prefix);
+        updateGroup = String.format("UPDATE %sgroup_slowmode SET time = ? WHERE group_name = ?;", prefix);
 
         sqlUtil.openConnection(connection -> {
             @Cleanup final PreparedStatement userTableStatement = connection.prepareStatement(String.format(userTable, prefix));

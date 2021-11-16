@@ -10,13 +10,10 @@ import pl.crystalek.crcapi.storage.util.SQLUtil;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class MySQLProvider extends SQLProvider {
     String insertUser;
-    String insertGroupDelay;
-
     public MySQLProvider(final SQLUtil sqlUtil, final DatabaseConfig databaseConfig) {
         super(sqlUtil, databaseConfig);
 
         this.insertUser = String.format("INSERT INTO %suser(nickname, uuid) VALUES (?, ?) ON DUPLICATE KEY UPDATE nickname = ?;", databaseConfig.getPrefix());
-        this.insertGroupDelay = String.format("INSERT INTO %sgroup_slowmode VALUES (?, ?) ON DUPLICATE KEY UPDATE time = ?;", databaseConfig.getPrefix());
         this.createTable();
     }
 
@@ -26,17 +23,12 @@ public final class MySQLProvider extends SQLProvider {
     }
 
     @Override
-    public void setGroupDelay(final String group, final int time) {
-        sqlUtil.executeUpdateAndOpenConnection(insertGroupDelay, group, time, time);
-    }
-
-    @Override
     public void createTable() {
         final String userTable = "CREATE TABLE IF NOT EXISTS %suser (\n" +
                 "    id INTEGER AUTO_INCREMENT PRIMARY KEY UNIQUE NOT NULL,\n" +
                 "    nickname VARCHAR(16) NOT NULL,\n" +
                 "    uuid CHAR(36) NOT NULL UNIQUE,\n" +
-                "    slowMode_time INTEGER,\n" +
+                "    time INTEGER,\n" +
                 "    break_stone_amount INTEGER\n" +
                 ");";
 

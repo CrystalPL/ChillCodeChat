@@ -42,7 +42,7 @@ public final class MongoProvider extends Provider {
 
         for (final Document document : groupSlowModeCollection.find()) {
             final String groupName = document.get("groupName", String.class);
-            final Integer slowMode = document.get("slowMode", Integer.class);
+            final Integer slowMode = document.get("slowMode", Integer.class) * 1000;
 
             groupMap.put(groupName, slowMode);
         }
@@ -55,7 +55,7 @@ public final class MongoProvider extends Provider {
         final Document userDocument = new Document("_id", userUUID.toString());
 
         final Document updateDocument = new Document()
-                .append("slowMode", user.getSlowDownTime())
+                .append("slowMode", user.getSlowDownTime() / 1000)
                 .append("breakStoneAmount", user.getBreakStone());
 
         userSlowModeCollection.updateOne(userDocument, updateDocument);
@@ -80,7 +80,7 @@ public final class MongoProvider extends Provider {
         final Integer slowMode = foundUserDocument.get("slowMode", Integer.class);
         final Integer breakStoneAmount = foundUserDocument.get("breakStoneAmount", Integer.class);
 
-        return Optional.of(new User(breakStoneAmount, slowMode));
+        return Optional.of(new User(breakStoneAmount, slowMode * 1000));
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class MongoProvider extends Provider {
     public void setGroupDelay(final String group, final int time) {
         final Document groupDocument = new Document()
                 .append("groupName", group)
-                .append("slowMode", time);
+                .append("slowMode", time / 1000);
 
         userSlowModeCollection.replaceOne(new Document("groupName", Pattern.compile(".*" + group + "*", Pattern.CASE_INSENSITIVE)), groupDocument, replaceOptions);
     }
