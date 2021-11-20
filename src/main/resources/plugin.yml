@@ -3,3 +3,4 @@ main: pl.chillcode.chillcodechat.ChillCodeChat
 version: 1.0
 author: Crystal
 depend: [ CrCAPICore, CrCAPIDatabase, CrCAPIMessage ]
+softdepend: [ Vault ]

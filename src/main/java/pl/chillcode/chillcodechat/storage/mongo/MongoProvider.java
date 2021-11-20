@@ -1,5 +1,6 @@
 package pl.chillcode.chillcodechat.storage.mongo;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -54,11 +55,8 @@ public final class MongoProvider extends Provider {
     public void saveUser(final UUID userUUID, final User user) {
         final Document userDocument = new Document("_id", userUUID.toString());
 
-        final Document updateDocument = new Document()
-                .append("slowMode", user.getSlowDownTime() / 1000)
-                .append("breakStoneAmount", user.getBreakStone());
-
-        userSlowModeCollection.updateOne(userDocument, updateDocument);
+        final Map<String, Object> updateDocumentList = ImmutableMap.of("breakStoneAmount", user.getBreakStone(), "slowMode", user.getSlowDownTime() / 1000);
+        userSlowModeCollection.updateOne(userDocument, new Document("$set", new Document(updateDocumentList)));
     }
 
     @Override
@@ -80,7 +78,7 @@ public final class MongoProvider extends Provider {
         final Integer slowMode = foundUserDocument.get("slowMode", Integer.class);
         final Integer breakStoneAmount = foundUserDocument.get("breakStoneAmount", Integer.class);
 
-        return Optional.of(new User(breakStoneAmount, slowMode * 1000));
+        return Optional.of(new User(breakStoneAmount == null ? 0 : breakStoneAmount, (slowMode == null ? 0 : slowMode * 1000)));
     }
 
     @Override
@@ -95,14 +93,14 @@ public final class MongoProvider extends Provider {
     public void setGroupDelay(final String group, final int time) {
         final Document groupDocument = new Document()
                 .append("groupName", group)
-                .append("slowMode", time / 1000);
+                .append("slowMode", time);
 
-        userSlowModeCollection.replaceOne(new Document("groupName", Pattern.compile(".*" + group + "*", Pattern.CASE_INSENSITIVE)), groupDocument, replaceOptions);
+        groupSlowModeCollection.replaceOne(new Document("groupName", Pattern.compile(".*" + group + "*", Pattern.CASE_INSENSITIVE)), groupDocument, replaceOptions);
     }
 
     @Override
     public void setPlayerDelay(final UUID playerUUID, final int time) {
-        userSlowModeCollection.replaceOne(new Document("_id", playerUUID.toString()), new Document("slowMode", time), replaceOptions);
+        userSlowModeCollection.updateOne(new Document("_id", playerUUID.toString()), new Document("$set", new Document("slowMode", time)));
     }
 
     @Override

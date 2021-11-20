@@ -1,6 +1,8 @@
 package pl.chillcode.chillcodechat.hook;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -8,11 +10,12 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 @UtilityClass
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class VaultHook {
     @Getter
-    private Permission permission;
+    Permission permission;
     @Getter
-    private boolean enableVault;
+    boolean enableVault;
 
     public void init() {
         try {
@@ -25,7 +28,7 @@ public class VaultHook {
             permission = registration.getProvider();
             enableVault = true;
 
-            Bukkit.getLogger().severe("[ChillCodeChat] Vault został poprawnie załadowany");
+            Bukkit.getLogger().info("[ChillCodeChat] Vault został poprawnie załadowany");
         } catch (final NoClassDefFoundError | ClassNotFoundException exception) {
             Bukkit.getLogger().severe("[ChillCodeChat] Nie odnaleziono plugin vault, ustawianie opóźnienia dla grupy rang jest niemożliwe!");
         }
