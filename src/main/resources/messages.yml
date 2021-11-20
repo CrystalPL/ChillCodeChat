@@ -10,24 +10,39 @@ playerNotFound:
 playerNotExists:
   chat: "&a&lChillCodeCheck &8» &7Ten gracz nigdy nie grał na serwerze"
 
+# wiadomość wyświetlana, gdy wystąpi problem podczas zapisu ustawień chatu do pliku
 saveError:
   chat: "&5&lChillCodeChat &8» &cWystąpił problem podczas zapisywania ustawień chat'u!"
 
+# wiadomość wyświetlana, gdy gracz próbuję za szybko pisać
 timeToNextMessage:
   chat: "&5&lChillCodeChat &8» &7Następną wiadomość możesz wysłać za &6{SLOWDOWN} &7sekund."
 
+# wiadomość wyświetlana, gdy gracz nie ma minimalnej ilości wykopanego kamienia, aby pisać na chat'cie
+# {ACTUAL_STONE} - aktualnie wykopany kamień
+# {MINIMAL_STONE} - wymagana liczba wykopanego kamienia, aby pisać na chat'cie
 noEnoughStone:
   chat: "&5&lChillCodeChat &8» &cNie masz wymaganej ilości wykopanego kamienia &6{ACTUAL_STONE}&7/&6{MINIMAL_STONE}&7."
 
 status:
+  # wiadomość wyświetlana, gdy gracz próbuje włączyć chat, gdy jest on już włączony
   onError:
     chat: "&5&lChillCodeChat &8» &cChat jest już włączony!"
+
+  # wiadomość wyświetlana, gdy gracz próbuje wyłączyć chat, gdy jest on już wyłączony
   offError:
     chat: "&5&lChillCodeChat &8» &cChat jest już wyłączony!"
+
+  # wiadomość wyświetlana, gdy chat zostanie włączony
   enable:
     chat: "&5&lChillCodeChat &8» &7Chat został włączony."
+
+  # wiadomość wyświetlana, gdy chat zostanie wyłączony
   disable:
     chat: "&5&lChillCodeChat &8» &7Chat został wyłączony."
+
+  # wiadomość wyświetlana, gdy chat zostanie włączony
+  # {ADMIN_NAME} - nick osoby włączającej chat
   enableBroadcast:
     chat:
       - "&8&m---------------------------------"
@@ -35,6 +50,9 @@ status:
       - "&5&lChillCodeChat &8» &7Chat został włączony przez &6{ADMIN_NAME}&7."
       - ""
       - "&8&m---------------------------------"
+
+  # wiadomość wyświetlana, gdy chat zostanie wyłączony
+  # {ADMIN_NAME} - nick osoby wyłączającej chat
   disableBroadcast:
     chat:
       - "&8&m---------------------------------"
@@ -42,16 +60,25 @@ status:
       - "&5&lChillCodeChat &8» &7Chat został wyłączony przez &6{ADMIN_NAME}&7."
       - ""
       - "&8&m---------------------------------"
+
+  # wiadomość wyświetlana, gdy komenda zostanie wywołana niepoprawnie
   usage:
     chat:
       - "&5&lChillCodeChat &8» &6/chat on &f- &7włącza chat"
       - "&5&lChillCodeChat &8» &6/chat off &f- &7wyłącza chat"
 
 clear:
+  # wiadomość wyświetlana administratorowi po wyczyszczeniu chatu graczowi
+  # {PLAYER_NAME} - nick osoby, której chat został wyczyszczony
   playerClearAdmin:
     chat: "&5&lChillCodeChat &8» &7Chat gracza &6{PLAYER_NAME} &7został wyczyszczony."
+
+  # wiadomość wyświetlana, gdy gracz ma permisję, dzięki której jego chat nie może zostać wyczyszczony
   bypass:
     chat: "&5&lChillCodeChat &8» &cNie możesz wyczyścić chatu temu graczowi!"
+
+  # wiadomość wyświetlana graczowi, któremu zostało wyczyszczony chat
+  # {ADMIN_NAME} - nick administratora, przez którego chat gracza został wyczyszczony
   playerChatClear:
     chat:
       - "&8&m---------------------------------"
@@ -59,6 +86,9 @@ clear:
       - "&5&lChillCodeChat &8» &7Twój chat został wyczyszczony przez &6{ADMIN_NAME}&7."
       - ""
       - "&8&m---------------------------------"
+
+  # wiadomość wyświetlana, gdy główny chat zostanie wyczyszczony
+  # {ADMIN_NAME} - nick administratora, przez którego chat został wyczyszczony
   serverChatClear:
     chat:
       - "&8&m---------------------------------"
@@ -66,37 +96,80 @@ clear:
       - "&5&lChillCodeChat &8» &7Chat został wyczyszczony przez &6{ADMIN_NAME}&7."
       - ""
       - "&8&m---------------------------------"
+
+  # wiadomość wyświetlana, gdy komenda zostanie wywołana niepoprawnie
   usage:
     chat:
       - "&5&lChillCodeChat &8» &6/chat clear &f- &7czyści chat"
       - "&5&lChillCodeChat &8» &6/chat clear <gracz> &f- &7czyści chat podanemu graczowi"
 
 slowmode:
+  # wiadomość wyświetlana, gdy podany argument nie jest liczbą
   timeError:
     chat: "&5&lChillCodeChat &8» &cCzas opóźnienia musi być liczbą całkowitą!"
+
+  # wiadomość wyświetlana graczowi, gdy administrator ustawi mu slowmode
+  # {ADMIN_NAME} - nick osoby, która ustawiła opóźnienie graczowi
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
   setSlowModePlayer:
     chat: "&5&lChillCodeChat &8» &7Administrator &6{ADMIN_NAME} &7ustawił Ci opóźnienie pisania na czacie na &6{SLOWMODE} &7sekund."
+
+  # wiadomość wyświetlana administratorowi, gdy ustawi opóźnienie podanemu graczowi
+  # {PLAYER_NAME} - nick gracza, któremu ustawiane jest opóźnienie w pisaniu na chat'cie
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
   setSlowModeAdmin:
     chat: "&5&lChillCodeChat &8» &7Ustawiono opóźnienia w pisaniu na czacie na &6{SLOWMODE} &7sekund dla gracza &6{PLAYER_NAME}&7."
+
+  # wiadomość wyświetlana, gdy opóźnienie pisania zostaje ustawione dla całego serwera
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
   setSlowModeSever:
     chat: "&5&lChillCodeChat &8» &7Globalne opóźnienie w pisaniu na czacie zostało ustawione na &6{SLOWMODE} &7sekund."
+
+  # wiadomość wyświetlana, gdy administrator próbuje nadać opóźnienie grupie, lecz na serwerze nie ma pluginu Vault
   vaultNotFound:
     chat: "&5&lChillCodeChat &8» &7Ustawienia opóźnienia dla rang jest niedostępne."
+
+  # wiadomość wyświetlana, gdy administrator próbuje nadać opóźnienie grupie, lecz ona nie istnieje
   groupNotExists:
     chat: "&5&lChillCodeChat &8» &cPodana grupa uprawnień nie istnieje!"
+
+  # wiadomość wyświetlana administratorowi, gdy zostanie ustawione opóźnienie w pisaniu na chat'cie dla danej grupy
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
+  # {RANK} - nazwa grupy uprawnień
   setSlowModeGroupAdmin:
     chat: "&5&lChillCodeChat &8» &7Ustawiono opóźnienia w pisaniu na czacie na &6{SLOWMODE} &7sekund dla rangi &6{RANK}&7."
+
+  # wiadomość wyświetlana członkom grupy uprawnień, gdy zostanie jej ustawione opóźnienie w pisaniu na chat'cie
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
+  # {RANK} - nazwa grupy uprawnień
+  # {ADMIN_NAME} - nick osoby, która ustawiła opóźnienie
   setSlowModeGroupPlayer:
     chat: "&5&lChillCodeChat &8» &7Administrator &6{ADMIN_NAME} &7ustawił Twojej randze (&6{RANK}&7) opóźnienie na &6{SLOWMODE} &7sekund."
+
+  # wiadomość wyświetlająca informację o opóźnieniu serwerowym, jak i dla wszystkich rang
+  # {SERVER_SLOWMODE} - opóźnienie serwerowe
+  # {RANKFORMAT_SLOWMODE} - format wiadomości dla poszczególnej rangi, dostępny w sekcji "rankSlowModeListFormat"
   generalInfoList:
     chat:
       - "&5&lChillCodeChat &8» &7Globalne opóźnienie na serwerze wynosi &6{SERVER_SLOWMODE} &7sekund."
       - "&5&lChillCodeChat &8» &7Opóźnienia dla poszczególnych rang:"
       - "{RANKFORMAT_SLOWMODE}"
+
+  # format wiadomości wyświetlany podczas wyświetlania informacji o opóźnieniach na serwerze
+  # {RANK} - nazwa grupy uprawnień
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
   rankSlowModeListFormat:
     chat: "&5&lChillCodeChat &8» &7Opóźnienie dla rangi &6{RANK} &7wynosi &6{SLOWMODE} &7sekund."
+
+  # wiadomość wyświetlana informację o opóźnieniu dla poszczególnego gracza
+  # {PLAYER_NAME} - nazwa gracza
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
   playerSlowModeInfo:
     chat: "&5&lChillCodeChat &8» &7Opóźnienie pisania dla gracza &6{PLAYER_NAME} &7wynosi &6{SLOWMODE} &7sekund."
+
+  # wiadomość wyświetlana, gdy zostanie ustawione opóźnienie dla rangi w pisaniu na chat'cie
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
+  # {RANK} - nazwa rangi
   groupSlowModeBroadcast:
     chat:
       - "&8&m---------------------------------"
@@ -104,6 +177,9 @@ slowmode:
       - "&5&lChillCodeChat &8» &7Od teraz opóźnienie w pisaniu wiadomości na czacie dla rangi &6{RANK} &7wynosi &6{SLOWMODE} &7sekund!"
       - ""
       - "&8&m---------------------------------"
+
+  # wiadomość wyświetlana, gdy zostanie ustawione opóźnienie serwerowe w pisaniu na chat'cie
+  # {SLOWMODE} - czas opóźnienia w pisaniu na chat'cie
   serverSlowModeBroadcast:
     chat:
       - "&8&m---------------------------------"
@@ -111,6 +187,8 @@ slowmode:
       - "&5&lChillCodeChat &8» &7Od teraz opóźnienie w pisaniu wiadomości na czacie wynosi &6{SLOWMODE} &7sekund!"
       - ""
       - "&8&m---------------------------------"
+
+  # wiadomość wyświetlana, gdy komenda zostanie wywołana niepoprawnie
   usage:
     chat:
       - "&5&lChillCodeChat &8» &6/chat slowmode player <gracz> <czas> &f- &7ustawia indywidualne opóźnienie dla gracza"
@@ -120,13 +198,20 @@ slowmode:
       - "&5&lChillCodeChat &8» &6/chat slowmode info player <gracz> &f- &7wyświetla informację o opóźnieniu dla podanego gracza"
 
 stone:
+  # wiadomość wyświetlana, gdy podany argument nie jest liczbą całkowitą
   stoneAmountError:
     chat: "&5&lChillCodeChat &8» &cLiczba wykopanego kamienia musi być liczbą całkowitą!"
+
+  # wiadomość wyświetlana, gdy minimalna ilość wykopanego kamienia zostanie ustawiona poprawnie
+  # {STONE_AMOUNT} - minimalna ilość wykopanego kamienia, aby pisać na chat'cie
   setStone:
     chat: "&5&lChillCodeChat &8» &7Minimalna liczba wykopanego kamiena, aby pisać na chat'cie wynosi &6{STONE_AMOUNT}&7."
+
+  # wiadomość wyświetlana, gdy komenda zostanie wywołana niepoprawnie
   usage:
     chat: "&5&lChillCodeChat &8» &6/chat stone <ilość kamienia> &f- &7ustawia minimalną ilość wykopanego kamienia, aby pisać na chat'cie"
 
+# wiadomość wyświetlana, gdy komenda zostanie wywołana niepoprawnie
 usage:
   chat:
     - "&5&lChillCodeChat &8» &6/chat on &f- &7włącza chat"

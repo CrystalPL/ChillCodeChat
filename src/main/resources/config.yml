@@ -44,5 +44,6 @@ command:
 
 # czy ma być wyświetlana wiadomość na czacie dla wszystkich o zmianie statusu chatu (on, off), opóźnieniu itd.
 broadcastAction: true
+
 # co ile sekund ma się odbywać automatyczny zapis wykopanego kamienia
 autoSaveTime: 60

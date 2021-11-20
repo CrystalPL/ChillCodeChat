@@ -39,10 +39,7 @@ dependencies {
     compileOnly name: 'CrCAPIMessage'
 }
 
-
 shadowJar {
-//    relocate 'pl.crystalek.crcapi', 'pl.chillcode.chillcodechat.lib'
-
     archiveFileName = "$baseName.$extension"
     classifier(null)
     minimize()
