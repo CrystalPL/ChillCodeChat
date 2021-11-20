@@ -44,7 +44,6 @@ public final class ChatClearCommand implements SubCommand {
             return;
         }
 
-        //wiadomosc wyswietlana, gdy gracz ma uprawnienie zabraniajace wyczyszczenia mu chatu
         if (player.hasPermission("chillcode.chat.clear.bypass")) {
             messageAPI.sendMessage("clear.bypass", sender);
             return;

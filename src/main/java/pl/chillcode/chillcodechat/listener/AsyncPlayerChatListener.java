@@ -34,6 +34,10 @@ public final class AsyncPlayerChatListener implements Listener {
             return;
         }
 
+        if (player.hasPermission("chillcode.chat.slowmode.bypass")) {
+            return;
+        }
+
         int slowDownTime = config.getServerSlowMode();
         if (user.getSlowDownTime() != 0) {
             slowDownTime = user.getSlowDownTime();
