@@ -12,9 +12,9 @@ ___
 
 ### Konfiguracja
 
-W pliku config.yml zna jdują się ustawienia do połączenia z bazą danych. Baza danych jest wymagana, by trzymać
-informacje o ilości wykopanego kamienia oraz o opóźnieniu dla danego gracza. Przechowywać te dane można w: SQLite, MySQL
-lub w MongoDB.
+W pliku config.yml znajdują się ustawienia do połączenia z bazą danych. Baza danych jest wymagana, by trzymać informacje
+o ilości wykopanego kamienia oraz o opóźnieniu dla danego gracza. Przechowywać te dane można w: SQLite, MySQL lub w
+MongoDB.
 
 W ustawieniach znajduję się pole prefix, podaję się tam przedrostek, jaki ma występować w nazwach tabel (SQLite, MYSQL)
 lub kolekcji (MongoDB).
