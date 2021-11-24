@@ -10,6 +10,7 @@ import pl.crystalek.crcapi.storage.util.SQLUtil;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class MySQLProvider extends SQLProvider {
     String insertUser;
+
     public MySQLProvider(final SQLUtil sqlUtil, final DatabaseConfig databaseConfig) {
         super(sqlUtil, databaseConfig);
 

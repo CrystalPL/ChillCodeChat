@@ -53,6 +53,7 @@ public final class ChillCodeChat extends JavaPlugin {
         if (!config.load()) {
             getLogger().severe("Wyłączanie pluginu");
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
 
         final MessageAPI messageAPI = new MessageAPI(this);
@@ -70,11 +71,11 @@ public final class ChillCodeChat extends JavaPlugin {
         VaultHook.init();
 
         final Provider provider = storage.getStorage().getProvider();
-        final SlowModeCache slowModeCache = new SlowModeCache(provider.getGroupsDelay());
+        final SlowModeCache slowModeCache = new SlowModeCache(provider.getGroupsDelay(), provider);
 
         final PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new BlockBreakListener(slowModeCache), this);
-        pluginManager.registerEvents(new PlayerJoinListener(slowModeCache, provider, this), this);
+        pluginManager.registerEvents(new PlayerJoinListener(slowModeCache, this), this);
         pluginManager.registerEvents(new PlayerQuitListener(provider, slowModeCache, this), this);
         pluginManager.registerEvents(new AsyncPlayerChatListener(config, slowModeCache, messageAPI), this);
 
@@ -82,6 +83,7 @@ public final class ChillCodeChat extends JavaPlugin {
         CommandRegistry.register(chatCommand);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, new AutoSaveTask(provider, slowModeCache), 0, config.getAutoSaveTime());
+        Bukkit.getOnlinePlayers().forEach(slowModeCache::createUser);
     }
 
     @Override
