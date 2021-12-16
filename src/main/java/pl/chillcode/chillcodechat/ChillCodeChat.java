@@ -18,6 +18,7 @@ import pl.crystalek.crcapi.command.CommandRegistry;
 import pl.crystalek.crcapi.config.ConfigHelper;
 import pl.crystalek.crcapi.config.FileHelper;
 import pl.crystalek.crcapi.message.MessageAPI;
+import pl.crystalek.crcapi.singlemessage.SingleMessageAPI;
 import pl.crystalek.crcapi.storage.BaseStorage;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public final class ChillCodeChat extends JavaPlugin {
             return;
         }
 
-        final MessageAPI messageAPI = new MessageAPI(this);
+        final MessageAPI messageAPI = new SingleMessageAPI(this);
         if (!messageAPI.init()) {
             return;
         }
