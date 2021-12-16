@@ -20,7 +20,7 @@ import pl.chillcode.chillcodechat.user.User;
 import pl.crystalek.crcapi.lib.adventure.adventure.text.Component;
 import pl.crystalek.crcapi.message.MessageAPI;
 import pl.crystalek.crcapi.message.impl.ChatMessage;
-import pl.crystalek.crcapi.message.loader.MessageUtil;
+import pl.crystalek.crcapi.message.util.MessageUtil;
 import pl.crystalek.crcapi.util.NumberUtil;
 
 import java.util.*;
@@ -142,7 +142,7 @@ public final class SlowModeSubCommand implements SubCommand {
             }
             case "info": {
                 if (args.length == 2) {
-                    final Optional<Component> rankSlowModeFormatComponentOptional = messageAPI.getComponent("slowmode.rankSlowModeListFormat", ChatMessage.class);
+                    final Optional<Component> rankSlowModeFormatComponentOptional = messageAPI.getComponent("slowmode.rankSlowModeListFormat", sender, ChatMessage.class);
                     if (!rankSlowModeFormatComponentOptional.isPresent()) {
                         messageAPI.sendMessage("slowmode.rankSlowModeListFormat", sender);
                         return;
