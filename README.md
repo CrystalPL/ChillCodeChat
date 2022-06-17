@@ -3,7 +3,7 @@
 Plugin dodający możliwość kontrolowania częstotliwości wysyłanych wiadomości dla poszczególnych graczy, grup i całego
 serwera. Wtyczka oferuje także możliwość ustawienia minimalnej ilości wykopanego kamienia, aby pisać na chat'cie.
 
-Do działania pluginu wymagane są następujące pluginy: **[CrCAPI](https://github.com/CrystalPL/CrCAPI/releases/)**.
+Do działania wtyczki wymagany jest plugin: **[CrCAPI](https://github.com/CrystalPL/CrCAPI/releases/)**.
 Opcjonalnym pluginem jest **[Vault](https://www.spigotmc.org/resources/vault.34315/)**. Jest on wymagany do ustawiania
 opóźnienia w pisaniu na czacie dla poszczególnej grupy uprawnień.
 ___
