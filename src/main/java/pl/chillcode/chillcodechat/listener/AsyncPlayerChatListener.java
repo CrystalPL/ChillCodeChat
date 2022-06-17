@@ -12,7 +12,7 @@ import pl.chillcode.chillcodechat.config.Config;
 import pl.chillcode.chillcodechat.hook.VaultHook;
 import pl.chillcode.chillcodechat.slowmode.SlowModeCache;
 import pl.chillcode.chillcodechat.user.User;
-import pl.crystalek.crcapi.message.MessageAPI;
+import pl.crystalek.crcapi.message.api.MessageAPI;
 
 import java.util.Map;
 

@@ -4,37 +4,44 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.chillcode.chillcodechat.command.SubCommand;
 import pl.chillcode.chillcodechat.config.Config;
 import pl.chillcode.chillcodechat.hook.VaultHook;
 import pl.chillcode.chillcodechat.slowmode.SlowModeCache;
 import pl.chillcode.chillcodechat.storage.Provider;
 import pl.chillcode.chillcodechat.user.User;
+import pl.crystalek.crcapi.command.impl.Command;
+import pl.crystalek.crcapi.command.model.CommandData;
+import pl.crystalek.crcapi.core.util.NumberUtil;
 import pl.crystalek.crcapi.lib.adventure.adventure.text.Component;
-import pl.crystalek.crcapi.message.MessageAPI;
-import pl.crystalek.crcapi.message.impl.ChatMessage;
-import pl.crystalek.crcapi.message.util.MessageUtil;
-import pl.crystalek.crcapi.util.NumberUtil;
+import pl.crystalek.crcapi.message.api.MessageAPI;
+import pl.crystalek.crcapi.message.api.message.IChatMessage;
+import pl.crystalek.crcapi.message.api.util.MessageUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public final class SlowModeSubCommand implements SubCommand {
+public final class SlowModeSubCommand extends Command {
     Set<String> firstArgumentList = ImmutableSet.of("player", "server", "group", "info");
     Config config;
     Provider provider;
     SlowModeCache slowModeCache;
     JavaPlugin plugin;
-    MessageAPI messageAPI;
+
+    public SlowModeSubCommand(final MessageAPI messageAPI, final Map<Class<? extends Command>, CommandData> commandDataMap, final Config config, final Provider provider, final SlowModeCache slowModeCache, final JavaPlugin plugin) {
+        super(messageAPI, commandDataMap);
+
+        this.config = config;
+        this.provider = provider;
+        this.slowModeCache = slowModeCache;
+        this.plugin = plugin;
+    }
 
     @Override
     public void execute(final CommandSender sender, final String[] args) {
@@ -142,13 +149,13 @@ public final class SlowModeSubCommand implements SubCommand {
             }
             case "info": {
                 if (args.length == 2) {
-                    final Optional<Component> rankSlowModeFormatComponentOptional = messageAPI.getComponent("slowmode.rankSlowModeListFormat", sender, ChatMessage.class);
+                    final Optional<IChatMessage> rankSlowModeFormatComponentOptional = messageAPI.getMessage("slowmode.rankSlowModeListFormat", sender, IChatMessage.class);
                     if (!rankSlowModeFormatComponentOptional.isPresent()) {
                         messageAPI.sendMessage("slowmode.rankSlowModeListFormat", sender);
                         return;
                     }
 
-                    final Component rankSlowModeFormatComponent = rankSlowModeFormatComponentOptional.get();
+                    final IChatMessage rankSlowModeFormatComponent = rankSlowModeFormatComponentOptional.get();
                     Component componentFormat = Component.empty();
 
                     final List<Map.Entry<String, Integer>> entrySet = new ArrayList<>(slowModeCache.getGroupDelayMap().entrySet());
@@ -157,7 +164,7 @@ public final class SlowModeSubCommand implements SubCommand {
                         final Map.Entry<String, Integer> entry = entrySet.get(i);
                         final Map<String, Object> replacements = ImmutableMap.of("{RANK}", entry.getKey(), "{SLOWMODE}", entry.getValue() / 1000);
 
-                        componentFormat = componentFormat.append(MessageUtil.replace(rankSlowModeFormatComponent, replacements));
+                        componentFormat = componentFormat.append(MessageUtil.replace(rankSlowModeFormatComponent.getChatComponent(), replacements));
 
                         if (i < entrySetSize - 1) {
                             componentFormat = componentFormat.append(Component.newline());
@@ -200,21 +207,6 @@ public final class SlowModeSubCommand implements SubCommand {
     }
 
     @Override
-    public int maxArgumentLength() {
-        return 4;
-    }
-
-    @Override
-    public int minArgumentLength() {
-        return 2;
-    }
-
-    @Override
-    public String getPermission() {
-        return "chillcode.chat.slowmode";
-    }
-
-    @Override
     public List<String> tabComplete(final CommandSender sender, final String[] args) {
         if (args.length == 2) {
             return firstArgumentList.stream().filter(argument -> argument.startsWith(args[1].toLowerCase())).collect(Collectors.toList());
@@ -251,7 +243,27 @@ public final class SlowModeSubCommand implements SubCommand {
     }
 
     @Override
-    public String usagePathMessage() {
+    public String getPermission() {
+        return "chillcode.chat.slowmode";
+    }
+
+    @Override
+    public boolean isUseConsole() {
+        return true;
+    }
+
+    @Override
+    public String getCommandUsagePath() {
         return "slowmode.usage";
+    }
+
+    @Override
+    public int maxArgumentLength() {
+        return 4;
+    }
+
+    @Override
+    public int minArgumentLength() {
+        return 2;
     }
 }

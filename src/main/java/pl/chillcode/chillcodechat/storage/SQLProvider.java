@@ -1,12 +1,14 @@
 package pl.chillcode.chillcodechat.storage;
 
+import lombok.AccessLevel;
 import lombok.Cleanup;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.bukkit.entity.Player;
 import pl.chillcode.chillcodechat.user.User;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.util.SQLFunction;
-import pl.crystalek.crcapi.storage.util.SQLUtil;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.provider.sql.BaseSQLProvider;
+import pl.crystalek.crcapi.database.provider.sql.model.SQLFunction;
+import pl.crystalek.crcapi.lib.hikari.HikariDataSource;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,19 +17,32 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@RequiredArgsConstructor
-public abstract class SQLProvider extends Provider {
-    protected final SQLUtil sqlUtil;
-    private final DatabaseConfig databaseConfig;
-    private String selectGroupSlowMode;
-    private String selectPlayerUUID;
-    private String updatePlayerSlowMode;
-    private String saveUser;
-    private String getUserByUUID;
-    private String getUserByNickname;
-    private String insertGroupDelay;
-    private String selectGroup;
-    private String updateGroup;
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public abstract class SQLProvider extends BaseSQLProvider implements Provider {
+    String selectGroupSlowMode;
+    String selectPlayerUUID;
+    String updatePlayerSlowMode;
+    String saveUser;
+    String getUserByUUID;
+    String getUserByNickname;
+    String insertGroupDelay;
+    String selectGroup;
+    String updateGroup;
+
+    public SQLProvider(final DatabaseConfig databaseConfig, final HikariDataSource database) {
+        super(databaseConfig, database);
+
+        final String prefix = databaseConfig.getPrefix();
+        this.selectGroupSlowMode = String.format("SELECT * FROM %sgroup_slowmode;", prefix);
+        this.selectPlayerUUID = String.format("SELECT uuid FROM %suser WHERE nickname = ?;", prefix);
+        this.updatePlayerSlowMode = String.format("UPDATE %suser SET time = ? WHERE uuid = ?;", prefix);
+        this.saveUser = String.format("UPDATE %suser SET time = ?, break_stone_amount = ? WHERE uuid = ?;", prefix);
+        this.getUserByUUID = String.format("SELECT time, break_stone_amount FROM %suser WHERE uuid = ? LIMIT 1;", prefix);
+        this.getUserByNickname = String.format("SELECT time, break_stone_amount FROM %suser WHERE nickname = ? LIMIT 1;", prefix);
+        this.insertGroupDelay = String.format("INSERT INTO %sgroup_slowmode(group_name, time) VALUES (?, ?);", prefix);
+        this.selectGroup = String.format("SELECT id FROM %sgroup_slowmode WHERE group_name = ?;", prefix);
+        this.updateGroup = String.format("UPDATE %sgroup_slowmode SET time = ? WHERE group_name = ?;", prefix);
+    }
 
     @Override
     public Map<String, Integer> getGroupsDelay() {
@@ -48,12 +63,22 @@ public abstract class SQLProvider extends Provider {
             return groupDelayMap;
         };
 
-        return sqlUtil.executeQueryAndOpenConnection(selectGroupSlowMode, function);
+        return executeQueryAndOpenConnection(selectGroupSlowMode, function);
     }
 
     @Override
     public void saveUser(final UUID userUUID, final User user) {
-        sqlUtil.executeUpdateAndOpenConnection(saveUser, user.getSlowDownTime() / 1000, user.getBreakStone(), userUUID.toString());
+        executeUpdateAndOpenConnection(saveUser, user.getSlowDownTime() / 1000, user.getBreakStone(), userUUID.toString());
+    }
+
+    @Override
+    public Optional<User> getUser(final String nickname) {
+        return getUser(getUserByNickname, nickname);
+    }
+
+    @Override
+    public Optional<User> getUser(final Player player) {
+        return getUser(getUserByUUID, player.getUniqueId().toString());
     }
 
     private Optional<User> getUser(final String sql, final Object... params) {
@@ -68,17 +93,7 @@ public abstract class SQLProvider extends Provider {
             return Optional.of(new User(breakStoneAmount, slowModeTime * 1000));
         };
 
-        return sqlUtil.executeQueryAndOpenConnection(sql, function, params);
-    }
-
-    @Override
-    public Optional<User> getUser(final String nickname) {
-        return getUser(getUserByNickname, nickname);
-    }
-
-    @Override
-    public Optional<User> getUser(final Player player) {
-        return getUser(getUserByUUID, player.getUniqueId().toString());
+        return executeQueryAndOpenConnection(sql, function, params);
     }
 
     @Override
@@ -91,39 +106,30 @@ public abstract class SQLProvider extends Provider {
             return Optional.of(UUID.fromString(resultSet.getString("uuid")));
         };
 
-        return sqlUtil.executeQueryAndOpenConnection(selectPlayerUUID, function, nickname);
+        return executeQueryAndOpenConnection(selectPlayerUUID, function, nickname);
     }
 
     @Override
     public void setGroupDelay(final String group, final int time) {
-        sqlUtil.openConnection(connection -> {
-            final Boolean isGroupExist = sqlUtil.executeQuery(connection, selectGroup, resultSet -> resultSet != null && resultSet.next(), group);
+        openConnection(connection -> {
+            final Boolean isGroupExist = executeQuery(connection, selectGroup, resultSet -> resultSet != null && resultSet.next(), group);
             if (isGroupExist) {
-                sqlUtil.executeUpdate(connection, updateGroup, time, group);
+                executeUpdate(connection, updateGroup, time, group);
             } else {
-                sqlUtil.executeUpdate(connection, insertGroupDelay, group, time);
+                executeUpdate(connection, insertGroupDelay, group, time);
             }
         });
     }
 
     @Override
     public void setPlayerDelay(final UUID playerUUID, final int time) {
-        sqlUtil.executeUpdateAndOpenConnection(updatePlayerSlowMode, time, playerUUID.toString());
+        executeUpdateAndOpenConnection(updatePlayerSlowMode, time, playerUUID.toString());
     }
 
     public void createTable(final String userTable, final String groupSlowModeTable) {
         final String prefix = databaseConfig.getPrefix();
-        selectGroupSlowMode = String.format("SELECT * FROM %sgroup_slowmode;", prefix);
-        selectPlayerUUID = String.format("SELECT uuid FROM %suser WHERE nickname = ?;", prefix);
-        updatePlayerSlowMode = String.format("UPDATE %suser SET time = ? WHERE uuid = ?;", prefix);
-        saveUser = String.format("UPDATE %suser SET time = ?, break_stone_amount = ? WHERE uuid = ?;", prefix);
-        getUserByUUID = String.format("SELECT time, break_stone_amount FROM %suser WHERE uuid = ? LIMIT 1;", prefix);
-        getUserByNickname = String.format("SELECT time, break_stone_amount FROM %suser WHERE nickname = ? LIMIT 1;", prefix);
-        insertGroupDelay = String.format("INSERT INTO %sgroup_slowmode(group_name, time) VALUES (?, ?);", prefix);
-        selectGroup = String.format("SELECT id FROM %sgroup_slowmode WHERE group_name = ?;", prefix);
-        updateGroup = String.format("UPDATE %sgroup_slowmode SET time = ? WHERE group_name = ?;", prefix);
 
-        sqlUtil.openConnection(connection -> {
+        openConnection(connection -> {
             @Cleanup final PreparedStatement userTableStatement = connection.prepareStatement(String.format(userTable, prefix));
             @Cleanup final PreparedStatement grupSlowModeTableStatement = connection.prepareStatement(String.format(groupSlowModeTable, prefix));
 

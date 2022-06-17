@@ -1,6 +1,6 @@
 database:
   # typ przechowywania danych: SQLite, MongoDB, MYSQL
-  storageType: MYSQL
+  storageType: SQLite
 
   # sekcja settings odpowiada za konfiguracje połączenia w przypadku użycia MYSQL/MongoDB
   settings:
@@ -38,9 +38,14 @@ database:
 
 # Konfiguracja komendy /chat
 command:
-  chat:
+  ChatCommand:
     name: "chat"
     aliases: "c"
+    subCommands:
+      ChatClearSubCommand: "clear"
+      ChatStatusSubCommand: [ "on", "off" ]
+      SlowModeSubCommand: "slowmode"
+      StoneSubCommand: "stone"
 
 # czy ma być wyświetlana wiadomość na czacie dla wszystkich o zmianie statusu chatu (on, off), opóźnieniu itd.
 broadcastAction: true

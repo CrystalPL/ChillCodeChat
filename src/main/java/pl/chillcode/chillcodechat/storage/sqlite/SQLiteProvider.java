@@ -4,15 +4,15 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.entity.Player;
 import pl.chillcode.chillcodechat.storage.SQLProvider;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.util.SQLUtil;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.lib.hikari.HikariDataSource;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public final class SQLiteProvider extends SQLProvider {
     String insertUser;
 
-    public SQLiteProvider(final SQLUtil sqlUtil, final DatabaseConfig databaseConfig) {
-        super(sqlUtil, databaseConfig);
+    public SQLiteProvider(final DatabaseConfig databaseConfig, final HikariDataSource database) {
+        super(databaseConfig, database);
 
         this.insertUser = String.format("INSERT OR REPLACE INTO %suser(nickname, uuid) VALUES (?, ?);", databaseConfig.getPrefix());
         this.createTable();
@@ -20,7 +20,7 @@ public final class SQLiteProvider extends SQLProvider {
 
     @Override
     public void createUser(final Player player) {
-        sqlUtil.executeUpdateAndOpenConnection(insertUser, player.getName(), player.getUniqueId().toString());
+        executeUpdateAndOpenConnection(insertUser, player.getName(), player.getUniqueId().toString());
     }
 
     @Override

@@ -2,32 +2,29 @@ package pl.chillcode.chillcodechat.config;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.crystalek.crcapi.config.FileHelper;
-import pl.crystalek.crcapi.config.exception.ConfigLoadException;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
-import pl.crystalek.crcapi.storage.config.DatabaseConfigLoader;
-import pl.crystalek.crcapi.util.NumberUtil;
+import pl.crystalek.crcapi.command.impl.Command;
+import pl.crystalek.crcapi.command.loader.CommandLoader;
+import pl.crystalek.crcapi.command.model.CommandData;
+import pl.crystalek.crcapi.core.config.ConfigHelper;
+import pl.crystalek.crcapi.core.config.ConfigParserUtil;
+import pl.crystalek.crcapi.core.config.FileHelper;
+import pl.crystalek.crcapi.core.config.exception.ConfigLoadException;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
+import pl.crystalek.crcapi.database.config.DatabaseConfigLoader;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
-public final class Config {
-    final FileConfiguration config;
+public final class Config extends ConfigHelper {
     final FileHelper serverConfigFileHelper;
-    final JavaPlugin plugin;
     DatabaseConfig databaseConfig;
-    String commandName;
-    List<String> commandAliases;
+    Map<Class<? extends Command>, CommandData> commandDataMap;
     boolean broadcastAction;
     @Setter
     int minimalStoneBreak;
@@ -37,38 +34,21 @@ public final class Config {
     boolean chatEnable;
     int autoSaveTime;
 
-    public boolean load() {
-        this.commandName = config.getString("command.chat.name");
-        this.commandAliases = Arrays.asList(config.getString("command.chat.aliases").split(", "));
+    public Config(final JavaPlugin plugin, final String fileName, final FileHelper serverConfigFileHelper) {
+        super(plugin, fileName);
 
-        try {
-            this.databaseConfig = DatabaseConfigLoader.getDatabaseConfig(config.getConfigurationSection("database"), plugin);
-        } catch (final ConfigLoadException exception) {
-            plugin.getLogger().severe("Wystąpił błąd podczas próby załadowania konfiguracji bazy danych");
-            plugin.getLogger().severe(exception.getMessage());
-            return false;
-        }
+        this.serverConfigFileHelper = serverConfigFileHelper;
+    }
 
-        this.broadcastAction = config.getBoolean("broadcastAction");
+    public void loadConfig() throws ConfigLoadException {
+        this.databaseConfig = DatabaseConfigLoader.getDatabaseConfig(configuration.getConfigurationSection("database"), plugin);
+        this.commandDataMap = CommandLoader.loadCommands(configuration.getConfigurationSection("command"), plugin.getClass().getClassLoader());
+        this.broadcastAction = ConfigParserUtil.getBoolean(configuration, "broadcastAction");
+        this.autoSaveTime = ConfigParserUtil.getInt(configuration, "autoSaveTime") * 20;
+
         final FileConfiguration serverSettings = serverConfigFileHelper.getConfiguration();
-        final Optional<Integer> minimalStoneBreakOptional = NumberUtil.getInt(serverSettings.get("minimalStoneBreak"));
-        if (!minimalStoneBreakOptional.isPresent()) {
-            plugin.getLogger().severe("Wartość pola minimalStoneBreak nie jest liczbą całkowitą!");
-            return false;
-        }
-
-        final Optional<Integer> serverSlowModeOptional = NumberUtil.getInt(serverSettings.get("serverSlowMode"));
-        if (!serverSlowModeOptional.isPresent()) {
-            plugin.getLogger().severe("Wartość pola serverSlowMode nie jest liczbą całkowitą!");
-            return false;
-        }
-
-        this.minimalStoneBreak = minimalStoneBreakOptional.get();
-        this.serverSlowMode = serverSlowModeOptional.get() * 1000;
-        this.chatEnable = serverSettings.getBoolean("chatEnable");
-        this.autoSaveTime = config.getInt("autoSaveTime") * 20;
-
-        return true;
+        this.minimalStoneBreak = ConfigParserUtil.getInt(serverSettings, "minimalStoneBreak");
+        this.serverSlowMode = ConfigParserUtil.getInt(serverSettings, "serverSlowMode") * 1000;
     }
 
     public boolean saveServerSettings() {

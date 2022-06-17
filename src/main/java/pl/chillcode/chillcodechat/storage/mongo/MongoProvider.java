@@ -7,11 +7,11 @@ import lombok.experimental.FieldDefaults;
 import org.bukkit.entity.Player;
 import pl.chillcode.chillcodechat.storage.Provider;
 import pl.chillcode.chillcodechat.user.User;
+import pl.crystalek.crcapi.database.config.DatabaseConfig;
 import pl.crystalek.crcapi.lib.bson.Document;
 import pl.crystalek.crcapi.lib.mongodb.client.MongoCollection;
 import pl.crystalek.crcapi.lib.mongodb.client.MongoDatabase;
 import pl.crystalek.crcapi.lib.mongodb.client.model.ReplaceOptions;
-import pl.crystalek.crcapi.storage.config.DatabaseConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public final class MongoProvider extends Provider {
+public final class MongoProvider implements Provider {
     final ReplaceOptions replaceOptions = new ReplaceOptions().upsert(true);
     final MongoDatabase mongoDatabase;
     final DatabaseConfig databaseConfig;

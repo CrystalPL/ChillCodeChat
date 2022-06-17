@@ -27,7 +27,6 @@ ___
 ### Komendy
 
 W pluginie jest jedna komenda /chat, z aliasem /c. Komenda, jak i alias jest możliwa do zmiany w pliku konfiguracyjnym.
-Przed użyciem komendy, gracz musi mieć uprawnienie **chillcode.chat.base**.
 
 |                 Komenda               |          Uprawnienie        |                       Opis komendy                    |
 |---------------------------------------|-----------------------------|-------------------------------------------------------|
